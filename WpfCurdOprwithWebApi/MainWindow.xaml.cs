@@ -54,10 +54,10 @@ namespace WpfCurdOprwithWebApi
             dgEmp.DataContext = employee;
         }
 
-        private async void SaveEmployee(EmployeeModel employeedetails)
+        private async void CreateEmployee(EmployeeModel employeedetails)
         {
             var json = string.Empty;
-            var response = await _serviceRequest.CreateandUpdateAsync(employeedetails, true);
+            var response = await _serviceRequest.CreateandUpdateEmployeeRequest(employeedetails, true);
             if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 response.EnsureSuccessStatusCode();
@@ -77,7 +77,7 @@ namespace WpfCurdOprwithWebApi
         private async void UpdateEmployee(EmployeeModel employeedetails)
         {
             var json = string.Empty;
-            var response = await _serviceRequest.CreateandUpdateAsync(employeedetails, false);
+            var response = await _serviceRequest.CreateandUpdateEmployeeRequest(employeedetails, false);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 response.EnsureSuccessStatusCode();
@@ -108,7 +108,7 @@ namespace WpfCurdOprwithWebApi
 
         private async void DeleteEmployee(int id)
         {
-            var response = await _serviceRequest.DeleteAsync(id);
+            var response = await _serviceRequest.DeleteEmployeeRequest(id);
             MessageBox.Show("Record successfully deleted.");
             GetEmployees();
 
@@ -138,7 +138,7 @@ namespace WpfCurdOprwithWebApi
                 status = txtStatus.Text,
             };
             if (UpdateVisibility)
-                this.SaveEmployee(employee);
+                this.CreateEmployee(employee);
             else
                 this.UpdateEmployee(employee);
 

@@ -29,12 +29,12 @@ namespace WpfCurdOprwithWebApi.Services
         }
 
         /// <summary>
-        /// CreateandUpdate
+        /// CreateandUpdateEmployeeRequest
         /// </summary>
         /// <param name="employeedetails"></param>
         /// <param name="isCheck"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> CreateandUpdateAsync(EmployeeModel employeedetails, bool isCheck)
+        public async Task<HttpResponseMessage> CreateandUpdateEmployeeRequest(EmployeeModel employeedetails, bool isCheck)
         {
             client.DefaultRequestHeaders
                                 .Accept
@@ -58,7 +58,7 @@ namespace WpfCurdOprwithWebApi.Services
             }
         }
 
-        public async Task<string> DeleteAsync(int id)
+        public async Task<string> DeleteEmployeeRequest(int id)
         {
             client.DefaultRequestHeaders
                                 .Accept
