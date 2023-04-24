@@ -49,7 +49,7 @@ namespace WpfCurdOprwithWebApi
 
         private async void GetEmployees()
         {
-            var response = await _serviceRequest.GetAsync();
+            var response = await _serviceRequest.GetEmployeeListRequest();
             var employee = JsonConvert.DeserializeObject<List<EmployeeModel>>(response);
             dgEmp.DataContext = employee;
         }

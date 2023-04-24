@@ -16,7 +16,7 @@ namespace WpfCurdOprwithWebApi.Services
 
         HttpClient client = new HttpClient();
 
-        public async Task<string> GetAsync()
+        public async Task<string> GetEmployeeListRequest()
         {
             client.DefaultRequestHeaders
                                 .Accept
