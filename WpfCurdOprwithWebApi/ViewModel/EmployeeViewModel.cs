@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using WpfCurd.BusinessAccessLayer;
+using WpfCurd.BusinessEntityLayer;
+using WpfCurd.DataAccessLayer;
 using WpfCurdOprwithWebApi.Commands;
 using WpfCurdOprwithWebApi.Model;
 namespace WpfCurdOprwithWebApi.ViewModel
