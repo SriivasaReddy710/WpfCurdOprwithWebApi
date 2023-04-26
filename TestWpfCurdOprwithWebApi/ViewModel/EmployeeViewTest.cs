@@ -6,7 +6,6 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
 {
     public class EmployeeViewTest
     {
-        // private readonly Mock<IEmployeeService> _serviceMock;
         EmployeeServices _services;
         [SetUp]
         public void Setup()

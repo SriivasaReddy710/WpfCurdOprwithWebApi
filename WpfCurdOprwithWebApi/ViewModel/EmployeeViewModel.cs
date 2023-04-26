@@ -1,15 +1,18 @@
-﻿using System;
-using System.Windows;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfCurd.BusinessAccessLayer;
 using WpfCurd.BusinessEntityLayer;
-using WpfCurd.DataAccessLayer;
 using WpfCurdOprwithWebApi.Commands;
 using WpfCurdOprwithWebApi.Model;
 namespace WpfCurdOprwithWebApi.ViewModel
 {
     public class EmployeeViewModel : ViewModelBase
     {
+        private readonly ILogger<EmployeeViewModel> _logger;
+        private IEmployee _employee;
 
         #region Properties
 
@@ -93,7 +96,7 @@ namespace WpfCurdOprwithWebApi.ViewModel
             get
             {
                 if (_saveCommand == null)
-                    _saveCommand = new RelayCommand(param => SaveData(), null);
+                    _saveCommand = new RelayCommand<EmployeeModel>((o) => SaveData());
 
                 return _saveCommand;
             }
@@ -101,22 +104,87 @@ namespace WpfCurdOprwithWebApi.ViewModel
 
         #endregion
 
-        public EmployeeModel EmployeeModel { get; }
+        private EmployeeModel employeeModel;
+        public EmployeeModel EmployeeModel
+        {
+            get { return employeeModel; }
+            set { employeeModel = value; }
+        }
 
         #region Constructor
 
-        public EmployeeViewModel()
+        public EmployeeViewModel(IEmployee employee)
         {
-
-            EmployeeModel = new EmployeeModel();
+            _employee = employee;
         }
 
         #endregion
 
+
+        #region Methods
+        public async Task<string> GetEmployees()
+        {
+            try
+            {
+                var response = await _employee.GetEmployees();
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Controller/ViewModel: EmployeeViewModel, Method :GetEmployees ", ex);
+                throw;
+            }
+
+        }
+
+        public async Task<HttpResponseMessage> CreateEmployee(EmployeeDetails employeedetails)
+        {
+            try
+            {
+                HttpResponseMessage response = await _employee.CreateEmployee(employeedetails);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Controller/ViewModel: EmployeeViewModel, Method :CreateEmployee ", ex);
+                throw;
+            }
+        }
+
+        public async Task<HttpResponseMessage> UpdateEmployee(EmployeeDetails employeedetails)
+        {
+            try
+            {
+                HttpResponseMessage response = await _employee.UpdateEmployee(employeedetails);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Controller/ViewModel: EmployeeViewModel, Method :UpdateEmployee ", ex);
+                throw;
+            }
+
+        }
+
+        public async Task<string> DeleteEmployee(int id)
+        {
+            try
+            {
+                var response = await _employee.DeleteEmployee(id);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Controller/ViewModel: EmployeeViewModel, Method :DeleteEmployee ", ex);
+                throw;
+            }
+
+        }
         public void SaveData()
         {
 
         }
 
+        #endregion
     }
 }

@@ -51,7 +51,7 @@
                 <Button  x:Name="btnLoadEmp" Content="Load Employee" HorizontalAlignment="Left" 
                          Height="30" Width="100" Margin="10,0,10,10" Click="btnLoadEmp_Click"/>
             </StackPanel>
-            <StackPanel Height="200">
+            <StackPanel Height="Auto">
                 <DataGrid x:Name="dgEmp" AutoGenerateColumns="False"
                      CanUserAddRows="True"
                      ItemsSource="{Binding}"
