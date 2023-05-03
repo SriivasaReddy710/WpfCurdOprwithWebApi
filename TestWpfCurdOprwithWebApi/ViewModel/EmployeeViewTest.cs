@@ -1,57 +1,96 @@
 using Moq;
+using TestWpfCurdOprwithWebApi.Mock;
 using TestWpfCurdOprwithWebApi.Model;
-using TestWpfCurdOprwithWebApi.Services;
+//using TestWpfCurdOprwithWebApi.Services;
+using WpfCurd.BusinessAccessLayer;
+using WpfCurd.BusinessEntityLayer;
+using WpfCurd.DataAccessLayer;
 
 namespace TestWpfCurdOprwithWebApi.ViewModel
 {
     public class EmployeeViewTest
     {
-        EmployeeServices _services;
+        // MockData _services;
+        private readonly Mock<IServiceRequest> _mockServiceRequest;
         [SetUp]
         public void Setup()
         {
         }
         public EmployeeViewTest()
         {
-            _services = new EmployeeServices();
+            _mockServiceRequest = new Mock<IServiceRequest>();
         }
 
         [Test]
         public void GetEmployee_returnAllResult()
         {
-            var result = _services.GetEmployee().Result;
-            List<EmployeeModel> value = result as List<EmployeeModel>;
-            Assert.That(value.Count, Is.EqualTo(3));
+            //arrange
+            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest()).Returns(MockData.GetTestEmployee());
+            var employee = new BAL(_mockServiceRequest.Object);
+            //act
+            var result = employee.GetEmployees();
+            //assert
+            Assert.IsNotNull(result);
+            //Assert.That(result.Result.Length, Is.Not.EqualTo(0));
         }
 
         [Test]
         public void GetEmployeeById_retuns_CorrectResult()
         {
-            var result = _services.GetEmployee(1).Result;
-            List<EmployeeModel> value = result as List<EmployeeModel>;
-            Assert.That(value.Count, Is.EqualTo(result.Count));
-        }
+            //arrange
+            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest()).Returns(MockData.GetTestEmployeeId(1));
+            var employee = new BAL(_mockServiceRequest.Object);
+            //act
+            var result = employee.GetEmployees();
 
-        [Test]
-        public void GetEmployee_returnAllResult_NotNull()
-        {
-            var result = _services.GetEmployee().Result;
-            List<EmployeeModel> value = result as List<EmployeeModel>;
-            Assert.IsNotNull(value);
+            //assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Result.Count, Is.EqualTo(1));
         }
 
         [Test]
         public void GetEmployee_returnAllResult_NotFoundl()
         {
-            var result = _services.GetEmployee().Result;
-            List<EmployeeModel> value = result as List<EmployeeModel>;
-            Assert.That(value.Count, Is.Not.EqualTo(4));
+            //arrange
+            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest()).Returns(MockData.GetTestEmployee());
+            var employee = new BAL(_mockServiceRequest.Object);
+            //act
+            var result = employee.GetEmployees();
+
+            //assert
+            Assert.IsNotNull(result);
+            //  Assert.That(result., Is.EqualTo(1));
+            Assert.That(result.Result.Count, Is.Not.EqualTo(4));
         }
 
         [Test]
         public void CreateEmployee_retuns_OkResult()
         {
-            EmployeeModel employeeModel = new EmployeeModel()
+            EmployeeDetails employeeModel = new EmployeeDetails()
+            {
+                id = 5,
+                name = "test1",
+                email = "test1",
+                gender = "test1",
+                status = "test1",
+            };
+            //arrange
+            _mockServiceRequest.Setup(n => n.CreateEmployeeRequest(It.IsAny<EmployeeDetails>())).Returns(MockData.CreateandUpdateTestEmployee());
+
+            var employee = new BAL(_mockServiceRequest.Object);
+
+            //act
+            var result = employee.CreateEmployee(employeeModel);
+
+            //assert
+            Assert.IsNotNull(result);
+            Assert.That(result?.Result?.id, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CreateEmployee_retuns_NoResult()
+        {
+            EmployeeDetails employeeModel = new EmployeeDetails()
             {
                 id = 1,
                 name = "test1",
@@ -59,82 +98,93 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
                 gender = "test1",
                 status = "test1",
             };
-            var result = _services.CreateEmployee(employeeModel);
-            Assert.That(result, Is.EqualTo(true));
-        }
+            //arrange
+            _mockServiceRequest.Setup(n => n.CreateEmployeeRequest(It.IsAny<EmployeeDetails>())).Returns(MockData.CreateandUpdateTestEmployee());
 
-        [Test]
-        public void CreateEmployee_retuns_NoResult()
-        {
-            EmployeeModel employeeModel = new EmployeeModel();
-            var result = _services.CreateEmployee(employeeModel);
-            Assert.That(result, Is.EqualTo(false));
-        }
+            var employee = new BAL(_mockServiceRequest.Object);
 
-        [Test]
-        public void CreateEmployee_retuns_NotFoundResult()
-        {
-            EmployeeModel employeeModel = new EmployeeModel()
-            {
-                id = 2,
-                name = "test2",
-                email = "test2",
-                gender = "test2",
-                status = "test2",
-            };
-            var result = _services.CreateEmployee(employeeModel);
-            Assert.That(result, Is.Not.EqualTo(true));
+            //act
+            var result = employee.CreateEmployee(employeeModel);
+
+            //assert
+            Assert.IsNotNull(result);
+            Assert.That(result?.Result?.id, Is.Not.EqualTo(2));
         }
 
 
         [Test]
         public void UpdateEmployee_retuns_OkResult()
         {
-            EmployeeModel employeeModel = new EmployeeModel()
+            EmployeeDetails employeeModel = new EmployeeDetails()
             {
-                id = 2,
+                id = 1,
                 name = "test2",
                 email = "test2",
                 gender = "test2",
                 status = "test2",
             };
-            var result = _services.UpdateEmployee(employeeModel);
-            Assert.That(result, Is.EqualTo(true));
+            //arrange
+            _mockServiceRequest.Setup(n => n.UpdateEmployeeRequest(It.IsAny<EmployeeDetails>())).Returns(MockData.CreateandUpdateTestEmployee());
+
+            var employee = new BAL(_mockServiceRequest.Object);
+
+            //act
+            var result = employee.UpdateEmployee(employeeModel);
+
+            //assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Result.email, Is.EqualTo("test1"));
         }
 
         [Test]
         public void UpdateEmployee_retuns_NotFoundResult()
         {
-            EmployeeModel employeeModel = new EmployeeModel()
+            EmployeeDetails employeeModel = new EmployeeDetails()
             {
                 id = 1,
-                name = "test1",
-                email = "test1",
-                gender = "test1",
-                status = "test1",
+                name = "test2",
+                email = "test2",
+                gender = "test2",
+                status = "test2",
             };
-            var result = _services.UpdateEmployee(employeeModel);
-            Assert.That(result, Is.EqualTo(false));
+            //arrange
+            _mockServiceRequest.Setup(n => n.UpdateEmployeeRequest(It.IsAny<EmployeeDetails>())).Returns(MockData.CreateandUpdateTestEmployee());
+
+            var employee = new BAL(_mockServiceRequest.Object);
+
+            //act
+            var result = employee.UpdateEmployee(employeeModel);
+
+            //assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Result.email, Is.Not.EqualTo("test2"));
         }
 
         [Test]
         public void DeleteEmployee_OkResult()
         {
-            var result = _services.GetEmployee().Result;
-            List<EmployeeModel> value = result as List<EmployeeModel>;
-            value.RemoveAt(0);
-            var count= value.Count;
-            Assert.That(count, Is.EqualTo(2));
+            //arrange
+            _mockServiceRequest.Setup(n => n.DeleteEmployeeRequest(It.IsAny<int>())).Returns(MockData.GetTestEmployeeId(1));
+            var employee = new BAL(_mockServiceRequest.Object);
+            //act
+            var result = employee.DeleteEmployee(1);
+            //assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Result.Count, Is.EqualTo(1));
+            //Assert.That(result.Result.Length, Is.EqualTo(0));
         }
 
         [Test]
         public void DeleteEmployee_NotFoundResult()
         {
-            var result = _services.GetEmployee().Result;
-            List<EmployeeModel> value = result as List<EmployeeModel>;
-            value.RemoveAt(0);
-            var count = value.Count;
-            Assert.That(count, Is.Not.EqualTo(3));
+            //arrange
+            _mockServiceRequest.Setup(n => n.DeleteEmployeeRequest(It.IsAny<int>())).Returns(MockData.GetTestEmployeeId(1));
+            var employee = new BAL(_mockServiceRequest.Object);
+            //act
+            var result = employee.DeleteEmployee(1);
+            //assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Result.Count, Is.Not.EqualTo(0));
         }
     }
 }

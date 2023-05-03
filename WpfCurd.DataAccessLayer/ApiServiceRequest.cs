@@ -1,12 +1,12 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WpfCurd.BusinessEntityLayer;
-using Newtonsoft.Json;
-using System.Text;
-using WpfCurd.DataAccessLayer.Utilities;
 using WpfCurd.DataAccessLayer.Constants;
+using WpfCurd.DataAccessLayer.Utilities;
 
 namespace WpfCurd.DataAccessLayer
 {
@@ -21,29 +21,31 @@ namespace WpfCurd.DataAccessLayer
             AddHeaders();
         }
 
-        public async Task<string> GetEmployeeListRequest()
+        public async Task<List<EmployeeDetails>> GetEmployeeListRequest()
         {
             try
             {
                 var requesturl = string.Concat(_appSettingURL.WebapiBaseUrl, GAConstants.ENDPOINT_Employe);
-                HttpResponseMessage response = await _client.GetAsync(new Uri(requesturl));
-                string result = await response.Content.ReadAsStringAsync();
-                return result;
+                var response = await _client.GetAsync(new Uri(requesturl));
+                var result = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<EmployeeDetails>>(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<HttpResponseMessage> CreateEmployeeRequest(EmployeeDetails employeeDetails)
+        public async Task<EmployeeDetails> CreateEmployeeRequest(EmployeeDetails employeeDetails)
         {
             try
             {
                 HttpContent byteContent = CreateHttpContent(employeeDetails);
                 var requesturl = string.Concat(_appSettingURL.WebapiBaseUrl, GAConstants.ENDPOINT_Employe);
-                HttpResponseMessage response = await _client.PostAsync(new Uri(requesturl), byteContent);
-                return response;
+                var response = await _client.PostAsync(new Uri(requesturl), byteContent);
+                response.EnsureSuccessStatusCode();
+                var employeeDetail = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<EmployeeDetails>(employeeDetail);
             }
             catch (Exception)
             {
@@ -51,14 +53,17 @@ namespace WpfCurd.DataAccessLayer
             }
             
         }
-        public async Task<HttpResponseMessage> UpdateEmployeeRequest(EmployeeDetails employeeDetails)
+
+        public async Task<EmployeeDetails> UpdateEmployeeRequest(EmployeeDetails employeeDetails)
         {
             try
             {
                 HttpContent byteContent = CreateHttpContent(employeeDetails);
                 var requesturl = string.Concat(_appSettingURL.WebapiBaseUrl, GAConstants.ENDPOINT_Employe_slash, employeeDetails.id);
-                HttpResponseMessage response = await _client.PutAsync(new Uri(requesturl), byteContent);
-                return response;
+                var response = await _client.PutAsync(new Uri(requesturl), byteContent);
+                response.EnsureSuccessStatusCode();
+                var employeeDetail = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<EmployeeDetails>(employeeDetail); ;
             }
             catch (Exception)
             {
@@ -66,14 +71,14 @@ namespace WpfCurd.DataAccessLayer
             }
         }
 
-        public async Task<string> DeleteEmployeeRequest(int id)
+        public async Task<List<EmployeeDetails>> DeleteEmployeeRequest(int id)
         {
             try
             {
                 var requesturl = string.Concat(_appSettingURL.WebapiBaseUrl, GAConstants.ENDPOINT_Employe_slash, id);
                 HttpResponseMessage response = await _client.DeleteAsync(new Uri(requesturl));
                 string result = await response.Content.ReadAsStringAsync();
-                return result;
+                return JsonConvert.DeserializeObject<List<EmployeeDetails>>(result);
             }
             catch (Exception)
             {

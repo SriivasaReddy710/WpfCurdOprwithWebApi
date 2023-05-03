@@ -10,9 +10,9 @@ namespace WpfCurd.BusinessAccessLayer
 {
     public interface IEmployee
     {
-        Task<string> GetEmployees();
-        Task<HttpResponseMessage> CreateEmployee(EmployeeDetails employeeDetails);
-        Task<HttpResponseMessage> UpdateEmployee(EmployeeDetails employeeDetails);
-        Task<string> DeleteEmployee(int id);
+        Task<List<EmployeeDetails>> GetEmployees();
+        Task<EmployeeDetails> CreateEmployee(EmployeeDetails employeeDetails);
+        Task<EmployeeDetails> UpdateEmployee(EmployeeDetails employeeDetails);
+        Task<List<EmployeeDetails>> DeleteEmployee(int id);
     }
 }

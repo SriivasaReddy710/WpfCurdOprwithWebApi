@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WpfCurd.BusinessEntityLayer
+﻿namespace WpfCurd.BusinessEntityLayer
 {
     public class EmployeeDetails
     {

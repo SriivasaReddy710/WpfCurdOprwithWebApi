@@ -28,7 +28,10 @@ namespace WpfCurdOprwithWebApi
             _serviceRequest = new ApiServiceRequest();
             _employee = new BAL(_serviceRequest);
             _employeeViewModel = new EmployeeViewModel(_employee);
-            // this.DataContext = _employeeViewModel;
+            this.DataContext = this;
+            CurrentPage = 1;
+            NumberofPages = 10;
+          
         }
 
         #region properties 
@@ -38,6 +41,27 @@ namespace WpfCurdOprwithWebApi
         {
             get { return _updateVisibility; }
             set { _updateVisibility = value; }
+        }
+
+        private int _genderIndex;
+        public int GenderIndex
+        {
+            get { return _genderIndex; }
+            set { _genderIndex = value; }
+        }
+
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get { return _currentPage; }
+            set { _currentPage = value; }
+        }
+
+        private int _numberofPages = 10;
+        public int NumberofPages
+        {
+            get { return _numberofPages; }
+            set { _numberofPages = value; }
         }
 
         #endregion
@@ -50,8 +74,7 @@ namespace WpfCurdOprwithWebApi
         private async void GetEmployees()
         {
             var response = await _employeeViewModel.GetEmployees();
-            var employee = JsonConvert.DeserializeObject<List<EmployeeModel>>(response);
-            dgEmp.DataContext = employee;
+            dgEmp.DataContext = response;
         }
 
         void btnDeleteEmployee(object sender, EventArgs e)
@@ -59,7 +82,7 @@ namespace WpfCurdOprwithWebApi
             if (MessageBox.Show("Confirm delete of this record?", "employee", MessageBoxButton.YesNo)
                 == MessageBoxResult.Yes)
             {
-                EmployeeModel employeedetails = ((FrameworkElement)sender).DataContext as EmployeeModel;
+                EmployeeDetails employeedetails = ((FrameworkElement)sender).DataContext as EmployeeDetails;
                 if (employeedetails != null)
                 {
                     this.DeleteEmployee(employeedetails.id);
@@ -70,14 +93,14 @@ namespace WpfCurdOprwithWebApi
         void btnEditEmployee(object sender, EventArgs e)
         {
             UpdateVisibility = false;
-            EmployeeModel employeedetails = ((FrameworkElement)sender).DataContext as EmployeeModel;
+            EmployeeDetails employeedetails = ((FrameworkElement)sender).DataContext as EmployeeDetails;
             if (employeedetails != null)
             {
                 txtEmpId.Text = employeedetails.id.ToString();
                 txtName.Text = employeedetails.name;
                 txtEmail.Text = employeedetails.email;
                 txtStatus.Text = employeedetails.status;
-                gendarCombx.SelectedItem = employeedetails.gender;
+                GetGenderIndex(employeedetails.gender);
             }
         }
 
@@ -124,23 +147,38 @@ namespace WpfCurdOprwithWebApi
             this.GetEmployees();
         }
 
-        private void CreateandUpdateEmployeeResponse(HttpResponseMessage response)
+        private void CreateandUpdateEmployeeResponse(EmployeeDetails response)
         {
-            var json = string.Empty;
-            if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
+            if (string.IsNullOrEmpty(response.message))
             {
-                response.EnsureSuccessStatusCode();
-                json = response.Content.ReadAsStringAsync().Result;
-                var employee = JsonConvert.DeserializeObject<EmployeeModel>(json);
-                dgEmp.DataContext = employee;
+                dgEmp.DataContext = response;
                 MessageBox.Show("Employee Record " + lblMessage.Content + "successfully");
                 this.GetEmployees();
             }
             else
             {
-                json = response.Content.ReadAsStringAsync().Result;
-                MessageBox.Show(json.ToString());
+                MessageBox.Show(response.ToString());
             }
+        }
+
+        private void GetGenderIndex(string gender)
+        {
+            if (gender == "male")
+            {
+                GenderIndex = 0;
+                gendarCombx.Text = "Male";
+            }
+            else if (gender == "female")
+            {
+                gendarCombx.Text = "Female";
+                GenderIndex = 1;
+            }
+            else if (gender == "others")
+            {
+                gendarCombx.Text = "Female";
+                GenderIndex = 2;
+            }
+
         }
     }
 }

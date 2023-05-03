@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Net.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfCurd.BusinessAccessLayer;
@@ -122,7 +122,7 @@ namespace WpfCurdOprwithWebApi.ViewModel
 
 
         #region Methods
-        public async Task<string> GetEmployees()
+        public async Task<List<EmployeeDetails>> GetEmployees()
         {
             try
             {
@@ -137,11 +137,11 @@ namespace WpfCurdOprwithWebApi.ViewModel
 
         }
 
-        public async Task<HttpResponseMessage> CreateEmployee(EmployeeDetails employeedetails)
+        public async Task<EmployeeDetails> CreateEmployee(EmployeeDetails employeedetails)
         {
             try
             {
-                HttpResponseMessage response = await _employee.CreateEmployee(employeedetails);
+                var response = await _employee.CreateEmployee(employeedetails);
                 return response;
             }
             catch (Exception ex)
@@ -151,11 +151,11 @@ namespace WpfCurdOprwithWebApi.ViewModel
             }
         }
 
-        public async Task<HttpResponseMessage> UpdateEmployee(EmployeeDetails employeedetails)
+        public async Task<EmployeeDetails> UpdateEmployee(EmployeeDetails employeedetails)
         {
             try
             {
-                HttpResponseMessage response = await _employee.UpdateEmployee(employeedetails);
+                var response = await _employee.UpdateEmployee(employeedetails);
                 return response;
             }
             catch (Exception ex)
@@ -166,7 +166,7 @@ namespace WpfCurdOprwithWebApi.ViewModel
 
         }
 
-        public async Task<string> DeleteEmployee(int id)
+        public async Task<List<EmployeeDetails>> DeleteEmployee(int id)
         {
             try
             {
