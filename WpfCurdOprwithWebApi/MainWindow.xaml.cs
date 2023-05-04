@@ -1,12 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using WpfCurd.BusinessAccessLayer;
 using WpfCurd.BusinessEntityLayer;
 using WpfCurd.DataAccessLayer;
-using WpfCurdOprwithWebApi.Model;
 using WpfCurdOprwithWebApi.ViewModel;
 using Label = System.Windows.Controls.Label;
 
@@ -20,7 +17,6 @@ namespace WpfCurdOprwithWebApi
         private EmployeeViewModel _employeeViewModel;
         private readonly IEmployee _employee;
         private readonly IServiceRequest _serviceRequest;
-
         Label lblMessage = new Label(); // lblmessage
         public MainWindow()
         {
@@ -29,9 +25,19 @@ namespace WpfCurdOprwithWebApi
             _employee = new BAL(_serviceRequest);
             _employeeViewModel = new EmployeeViewModel(_employee);
             this.DataContext = this;
-            CurrentPage = 1;
-            NumberofPages = 10;
-          
+            this.GetEmployees(0);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                var e = new PropertyChangedEventArgs(propertyName);
+                handler(this, e);
+            }
         }
 
         #region properties 
@@ -40,41 +46,70 @@ namespace WpfCurdOprwithWebApi
         public bool UpdateVisibility
         {
             get { return _updateVisibility; }
-            set { _updateVisibility = value; }
+            set
+            {
+                _updateVisibility = value;
+                OnPropertyChanged("UpdateVisibility");
+            }
         }
 
         private int _genderIndex;
         public int GenderIndex
         {
             get { return _genderIndex; }
-            set { _genderIndex = value; }
+            set
+            {
+                _genderIndex = value;
+                OnPropertyChanged("GenderIndex");
+            }
         }
 
-        private int _currentPage = 1;
-        public int CurrentPage
+        private int _start;
+        public int Start
         {
-            get { return _currentPage; }
-            set { _currentPage = value; }
+            get { return _start; }
+            set
+            {
+                _start = value;
+                OnPropertyChanged("Start");
+            }
         }
 
-        private int _numberofPages = 10;
-        public int NumberofPages
+        private int _nextpage;
+        public int Nextpage
         {
-            get { return _numberofPages; }
-            set { _numberofPages = value; }
+            get { return _nextpage; }
+            set
+            {
+                _nextpage = value;
+                OnPropertyChanged("Nextpage");
+            }
+        }
+
+        private int _totalItems;
+        public int TotalItems
+        {
+            get { return _totalItems; }
+            set
+            {
+                _totalItems = value;
+                OnPropertyChanged("TotalItems");
+            }
         }
 
         #endregion
 
         private void btnLoadEmp_Click(object sender, RoutedEventArgs e)
         {
-            this.GetEmployees();
+            this.GetEmployees(0);
         }
 
-        private async void GetEmployees()
+        private async void GetEmployees(int ispage)
         {
-            var response = await _employeeViewModel.GetEmployees();
-            dgEmp.DataContext = response;
+            var response = await _employeeViewModel.GetEmployees(ispage);
+            dgEmp.DataContext = response.data;
+            TotalItems = response.meta.pagination.limit;
+            Start = response.meta.pagination.page;
         }
 
         void btnDeleteEmployee(object sender, EventArgs e)
@@ -144,16 +179,16 @@ namespace WpfCurdOprwithWebApi
         {
             var response = _employeeViewModel.DeleteEmployee(id);
             MessageBox.Show("Record successfully deleted.");
-            this.GetEmployees();
+            this.GetEmployees(0);
         }
 
-        private void CreateandUpdateEmployeeResponse(EmployeeDetails response)
+        private void CreateandUpdateEmployeeResponse(Usrer response)
         {
-            if (string.IsNullOrEmpty(response.message))
+            if (response.code == 200 || response.code == 201)
             {
                 dgEmp.DataContext = response;
                 MessageBox.Show("Employee Record " + lblMessage.Content + "successfully");
-                this.GetEmployees();
+                this.GetEmployees(0);
             }
             else
             {
@@ -180,5 +215,31 @@ namespace WpfCurdOprwithWebApi
             }
 
         }
+
+
+        private void btnnextpage_Click(object sender, RoutedEventArgs e)
+        {
+            int nextpage = 0;
+            nextpage = Start++;
+            GetEmployees(nextpage);
+        }
+
+        private void btnlAstpage_Click(object sender, RoutedEventArgs e)
+        {
+            GetEmployees(10);
+        }
+
+        private void btnfirstpage_Click(object sender, RoutedEventArgs e)
+        {
+            GetEmployees(0);
+        }
+
+        private void btnpreviouspage_Click(object sender, RoutedEventArgs e)
+        {
+            int previous = 0;
+            previous = Nextpage--;
+            GetEmployees(previous);
+        }
+
     }
 }

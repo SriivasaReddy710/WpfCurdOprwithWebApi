@@ -13,30 +13,31 @@ namespace WpfCurd.DataAccessLayer
     public class ApiServiceRequest : IServiceRequest
     {
         private readonly HttpClient _client;
-        private readonly AppSettingURL  _appSettingURL;
+        private readonly AppSettingURL _appSettingURL;
         public ApiServiceRequest()
         {
-            _appSettingURL= new AppSettingURL();
+            _appSettingURL = new AppSettingURL();
             _client = new HttpClient();
             AddHeaders();
         }
 
-        public async Task<List<EmployeeDetails>> GetEmployeeListRequest()
+        public async Task<Usrerlist> GetEmployeeListRequest(int ispage)
         {
             try
             {
-                var requesturl = string.Concat(_appSettingURL.WebapiBaseUrl, GAConstants.ENDPOINT_Employe);
+                var endpoint = ispage > 0 ? string.Concat(GAConstants.ENDPOINT_Employe_pages,ispage) : GAConstants.ENDPOINT_Employe;
+                var requesturl = string.Concat(_appSettingURL.WebapiBaseUrl, endpoint);
                 var response = await _client.GetAsync(new Uri(requesturl));
                 var result = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<EmployeeDetails>>(result);
+                return JsonConvert.DeserializeObject<Usrerlist>(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
-        public async Task<EmployeeDetails> CreateEmployeeRequest(EmployeeDetails employeeDetails)
+        public async Task<Usrer> CreateEmployeeRequest(EmployeeDetails employeeDetails)
         {
             try
             {
@@ -45,16 +46,16 @@ namespace WpfCurd.DataAccessLayer
                 var response = await _client.PostAsync(new Uri(requesturl), byteContent);
                 response.EnsureSuccessStatusCode();
                 var employeeDetail = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<EmployeeDetails>(employeeDetail);
+                return JsonConvert.DeserializeObject<Usrer>(employeeDetail);
             }
             catch (Exception)
             {
                 throw;
             }
-            
+
         }
 
-        public async Task<EmployeeDetails> UpdateEmployeeRequest(EmployeeDetails employeeDetails)
+        public async Task<Usrer> UpdateEmployeeRequest(EmployeeDetails employeeDetails)
         {
             try
             {
@@ -63,7 +64,7 @@ namespace WpfCurd.DataAccessLayer
                 var response = await _client.PutAsync(new Uri(requesturl), byteContent);
                 response.EnsureSuccessStatusCode();
                 var employeeDetail = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<EmployeeDetails>(employeeDetail); ;
+                return JsonConvert.DeserializeObject<Usrer>(employeeDetail); ;
             }
             catch (Exception)
             {
@@ -71,14 +72,14 @@ namespace WpfCurd.DataAccessLayer
             }
         }
 
-        public async Task<List<EmployeeDetails>> DeleteEmployeeRequest(int id)
+        public async Task<Usrer> DeleteEmployeeRequest(int id)
         {
             try
             {
                 var requesturl = string.Concat(_appSettingURL.WebapiBaseUrl, GAConstants.ENDPOINT_Employe_slash, id);
                 HttpResponseMessage response = await _client.DeleteAsync(new Uri(requesturl));
                 string result = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<EmployeeDetails>>(result);
+                return JsonConvert.DeserializeObject<Usrer>(result);
             }
             catch (Exception)
             {
@@ -103,6 +104,6 @@ namespace WpfCurd.DataAccessLayer
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
               GAConstants.ENDPOINT_TOKEN, _appSettingURL.AccessToken);
         }
-       
+
     }
 }

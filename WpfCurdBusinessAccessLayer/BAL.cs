@@ -15,25 +15,25 @@ namespace WpfCurd.BusinessAccessLayer
             _serviceRequest = serviceRequest;
         }
 
-        public async Task<List<EmployeeDetails>> GetEmployees()
+        public async Task <Usrerlist> GetEmployees(int ispage)
         {
-            var response = await _serviceRequest.GetEmployeeListRequest();
+            var response = await _serviceRequest.GetEmployeeListRequest(ispage);
             return response;
         }
 
-        public async Task<EmployeeDetails> CreateEmployee(EmployeeDetails employeedetails)
+        public async Task<Usrer> CreateEmployee(EmployeeDetails employeedetails)
         {
             var response = await _serviceRequest.CreateEmployeeRequest(employeedetails);
             return response;
         }
 
-        public async Task<EmployeeDetails> UpdateEmployee(EmployeeDetails employeedetails)
+        public async Task<Usrer> UpdateEmployee(EmployeeDetails employeedetails)
         {
             var response = await _serviceRequest.UpdateEmployeeRequest(employeedetails);
             return response;
         }
 
-        public async Task<List<EmployeeDetails>> DeleteEmployee(int id)
+        public async Task<Usrer> DeleteEmployee(int id)
         {
             var response = await _serviceRequest.DeleteEmployeeRequest(id);
             return response;

@@ -10,9 +10,9 @@ namespace WpfCurd.DataAccessLayer
 {
     public interface IServiceRequest
     {
-        Task<List<EmployeeDetails>> GetEmployeeListRequest();
-        Task<EmployeeDetails> CreateEmployeeRequest(EmployeeDetails employeeDetails);
-        Task<EmployeeDetails> UpdateEmployeeRequest(EmployeeDetails employeeDetails);
-        Task<List<EmployeeDetails>> DeleteEmployeeRequest(int id);
+        Task<Usrerlist> GetEmployeeListRequest(int ispage);
+        Task<Usrer> CreateEmployeeRequest(EmployeeDetails employeeDetails);
+        Task<Usrer> UpdateEmployeeRequest(EmployeeDetails employeeDetails);
+        Task<Usrer> DeleteEmployeeRequest(int id);
     }
 }

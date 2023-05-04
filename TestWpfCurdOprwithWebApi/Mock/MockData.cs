@@ -6,7 +6,7 @@ namespace TestWpfCurdOprwithWebApi.Mock
 {
     public static class MockData
     {
-        public static Task<List<EmployeeDetails>> GetTestEmployee()
+        public static Task<Usrerlist> GetTestEmployee()
         {
             var employee = new List<EmployeeDetails>() {
             new EmployeeDetails()
@@ -34,58 +34,82 @@ namespace TestWpfCurdOprwithWebApi.Mock
                 status = "test3" ,
             },
             };
-            return Task.FromResult(employee);
-        }
-
-        public static Task<List<EmployeeDetails>> GetTestEmployeeId(int id)
-        {
-            var employee = new List<EmployeeDetails>() {
-            new EmployeeDetails()
+            Meta metadata = new ()
             {
-                id = 1,
-                name ="test1",
-                email = "test1",
-                gender = "test1",
-                status = "test1" ,
-            }
+              pagination = new Pagination()
+              {
+                  page = 1,
+                  limit = 10,
+                  pages= 299
+              }
             };
-            return Task.FromResult(employee);
+
+            Usrerlist userDetails = new()
+            {
+                code = 200,
+                meta = metadata,
+                data     = employee
+            };
+            return Task.FromResult(userDetails);
         }
 
-        public static Task<EmployeeDetails> CreateandUpdateTestEmployee()
+        public static Task<Usrer> GetTestEmployeeId(int id)
+        {
+            Meta metadata = new()
+            {
+                pagination = new Pagination()
+                {
+                    page = 1,
+                    limit = 10,
+                    pages = 299
+                }
+            };
+
+            Usrer userDetail = new()
+            {
+                code = 200,
+                meta = metadata,
+                data = new EmployeeDetails()
+                {
+                    id = 1,
+                    name = "test1",
+                    email = "test1",
+                    gender = "test1",
+                    status = "test1",
+                }
+            };
+            return Task.FromResult(userDetail);
+        }
+
+        public static Task<Usrer> CreateandUpdateTestEmployee()
         {
 
-            var employee1 = new EmployeeDetails()
+            Meta metadata = new()
             {
-                id = 1,
-                name = "test1",
-                email = "test1",
-                gender = "test1",
-                status = "test1",
-                message = "Sussed",
+                pagination = new Pagination()
+                {
+                    page = 1,
+                    limit = 10,
+                    pages = 299
+                }
             };
-            var response = employee1;
-            return Task.FromResult(response);
+
+            Usrer userDetail = new()
+            {
+                code = 200,
+                meta = metadata,
+                data     = new EmployeeDetails()
+                {
+                    id = 3,
+                    name = "test3",
+                    email = "test3",
+                    gender = "test3",
+                    status = "test3",
+                }
+            };
+            return Task.FromResult(userDetail);
         }
 
-        public static bool UpdateEmployee(EmployeeDetails employeeModel)
-        {
-            var employee = new EmployeeDetails()
-            {
-                id = 1,
-                name = "test1",
-                email = "test1",
-                gender = "test1",
-                status = "test1",
-            };
-            if (employee.id != employeeModel.id)
-            {
-                var employee1 = employeeModel;
-                employee = employee1;
-                return employee.id == employee1.id;
-            }
-            return false;
 
-        }
     }
 }

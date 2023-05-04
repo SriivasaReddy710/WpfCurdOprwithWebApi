@@ -25,42 +25,26 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
         public void GetEmployee_returnAllResult()
         {
             //arrange
-            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest()).Returns(MockData.GetTestEmployee());
+            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest(It.IsAny<int>())).Returns(MockData.GetTestEmployee());
             var employee = new BAL(_mockServiceRequest.Object);
             //act
-            var result = employee.GetEmployees();
+            var result = employee.GetEmployees(0);
             //assert
             Assert.IsNotNull(result);
-            //Assert.That(result.Result.Length, Is.Not.EqualTo(0));
-        }
-
-        [Test]
-        public void GetEmployeeById_retuns_CorrectResult()
-        {
-            //arrange
-            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest()).Returns(MockData.GetTestEmployeeId(1));
-            var employee = new BAL(_mockServiceRequest.Object);
-            //act
-            var result = employee.GetEmployees();
-
-            //assert
-            Assert.IsNotNull(result);
-            Assert.That(result.Result.Count, Is.EqualTo(1));
+            Assert.That(result?.Result.code, Is.EqualTo(200));
         }
 
         [Test]
         public void GetEmployee_returnAllResult_NotFoundl()
         {
             //arrange
-            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest()).Returns(MockData.GetTestEmployee());
+            _mockServiceRequest.Setup(n => n.GetEmployeeListRequest(It.IsAny<int>())).Returns(MockData.GetTestEmployee());
             var employee = new BAL(_mockServiceRequest.Object);
             //act
-            var result = employee.GetEmployees();
+            var result = employee.GetEmployees(1);
 
             //assert
             Assert.IsNotNull(result);
-            //  Assert.That(result., Is.EqualTo(1));
-            Assert.That(result.Result.Count, Is.Not.EqualTo(4));
         }
 
         [Test]
@@ -68,7 +52,7 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
         {
             EmployeeDetails employeeModel = new EmployeeDetails()
             {
-                id = 5,
+                id = 1,
                 name = "test1",
                 email = "test1",
                 gender = "test1",
@@ -84,7 +68,8 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
 
             //assert
             Assert.IsNotNull(result);
-            Assert.That(result?.Result?.id, Is.EqualTo(1));
+            Assert.That(result?.Result?.code, Is.EqualTo(200));
+            Assert.That(result?.Result?.data.id, Is.EqualTo(3));
         }
 
         [Test]
@@ -108,7 +93,8 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
 
             //assert
             Assert.IsNotNull(result);
-            Assert.That(result?.Result?.id, Is.Not.EqualTo(2));
+            Assert.That(result?.Result?.code, Is.EqualTo(200));
+            Assert.That(result?.Result?.data.id, Is.Not.EqualTo(2));
         }
 
 
@@ -133,7 +119,7 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
 
             //assert
             Assert.IsNotNull(result);
-            Assert.That(result.Result.email, Is.EqualTo("test1"));
+            Assert.That(result.Result.data.email, Is.EqualTo("test3"));
         }
 
         [Test]
@@ -157,7 +143,8 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
 
             //assert
             Assert.IsNotNull(result);
-            Assert.That(result.Result.email, Is.Not.EqualTo("test2"));
+            Assert.That(result?.Result?.code, Is.EqualTo(200));
+            Assert.That(result.Result.data.email, Is.Not.EqualTo("test2"));
         }
 
         [Test]
@@ -170,8 +157,8 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
             var result = employee.DeleteEmployee(1);
             //assert
             Assert.IsNotNull(result);
-            Assert.That(result.Result.Count, Is.EqualTo(1));
-            //Assert.That(result.Result.Length, Is.EqualTo(0));
+            Assert.That(result?.Result?.code, Is.EqualTo(200));
+            Assert.That(result.Result.data.id, Is.EqualTo(1));
         }
 
         [Test]
@@ -184,7 +171,8 @@ namespace TestWpfCurdOprwithWebApi.ViewModel
             var result = employee.DeleteEmployee(1);
             //assert
             Assert.IsNotNull(result);
-            Assert.That(result.Result.Count, Is.Not.EqualTo(0));
+            Assert.That(result?.Result?.code, Is.EqualTo(200));
+            Assert.That(result.Result.data.id, Is.Not.EqualTo(2));
         }
     }
 }

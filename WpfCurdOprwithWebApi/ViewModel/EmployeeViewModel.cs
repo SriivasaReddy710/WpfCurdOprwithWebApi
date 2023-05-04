@@ -122,11 +122,11 @@ namespace WpfCurdOprwithWebApi.ViewModel
 
 
         #region Methods
-        public async Task<List<EmployeeDetails>> GetEmployees()
+        public async Task<Usrerlist> GetEmployees(int ispage)
         {
             try
             {
-                var response = await _employee.GetEmployees();
+                var response = await _employee.GetEmployees(ispage);
                 return response;
             }
             catch (Exception ex)
@@ -137,7 +137,7 @@ namespace WpfCurdOprwithWebApi.ViewModel
 
         }
 
-        public async Task<EmployeeDetails> CreateEmployee(EmployeeDetails employeedetails)
+        public async Task<Usrer> CreateEmployee(EmployeeDetails employeedetails)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace WpfCurdOprwithWebApi.ViewModel
             }
         }
 
-        public async Task<EmployeeDetails> UpdateEmployee(EmployeeDetails employeedetails)
+        public async Task<Usrer> UpdateEmployee(EmployeeDetails employeedetails)
         {
             try
             {
@@ -166,7 +166,7 @@ namespace WpfCurdOprwithWebApi.ViewModel
 
         }
 
-        public async Task<List<EmployeeDetails>> DeleteEmployee(int id)
+        public async Task<Usrer> DeleteEmployee(int id)
         {
             try
             {

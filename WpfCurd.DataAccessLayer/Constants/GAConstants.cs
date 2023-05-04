@@ -11,6 +11,7 @@ namespace WpfCurd.DataAccessLayer.Constants
         //Api
         public const string ENDPOINT_Employe = "users";
         public const string ENDPOINT_Employe_slash = "users/";
+        public const string ENDPOINT_Employe_pages = "users?page=";
         public const string ENDPOINT_TOKEN = "Bearer";
     }
 }
