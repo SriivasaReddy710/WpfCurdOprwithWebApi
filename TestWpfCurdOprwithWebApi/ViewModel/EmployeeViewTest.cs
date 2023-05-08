@@ -1,7 +1,5 @@
 using Moq;
 using TestWpfCurdOprwithWebApi.Mock;
-using TestWpfCurdOprwithWebApi.Model;
-//using TestWpfCurdOprwithWebApi.Services;
 using WpfCurd.BusinessAccessLayer;
 using WpfCurd.BusinessEntityLayer;
 using WpfCurd.DataAccessLayer;

@@ -216,7 +216,6 @@ namespace WpfCurdOprwithWebApi
 
         }
 
-
         private void btnnextpage_Click(object sender, RoutedEventArgs e)
         {
             int nextpage = 0;

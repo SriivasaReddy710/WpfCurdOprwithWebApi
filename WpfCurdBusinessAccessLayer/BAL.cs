@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WpfCurd.BusinessEntityLayer;
 using WpfCurd.DataAccessLayer;
-using WpfCurd.DataAccessLayer.Constants;
 
 namespace WpfCurd.BusinessAccessLayer
 {
